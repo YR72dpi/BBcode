@@ -1,9 +1,8 @@
 <?php
-require_once 'class.text.php';
 /**
 * inspirer par https://github.com/Genert/bbcode
 */
-class bbcode { //extends AnotherClass
+class bbcode {
 
 	/* ------------------------------------- *\
 			private
@@ -107,7 +106,7 @@ class bbcode { //extends AnotherClass
             'pattern' => '/\[list=A\] *?(.*?) *?\[\/list\]/s',
             'replace' => '<ol type="A">$1</ol>',
             'content' => '$1',
-            'exemple' => "[list=a]\n \t[*] texte\n \t[*] texte\n \t[*] texte\n[/list]"
+            'exemple' => "[list=A]\n \t[*] texte\n \t[*] texte\n \t[*] texte\n[/list]"
         ],
         'Liste item' => [
             'pattern' => '/\[\*\](.*)/',
@@ -149,7 +148,13 @@ class bbcode { //extends AnotherClass
 	
 	//public function __construct(argument){}
 
-	public function convertToHtml($source = string, $caseSensitive = null){
+
+    /**
+     * Convert BBCode to HTML
+     * @param string $source is your text
+     * @param bool $caseSensitive true (insensitive) by default
+     */
+	public function convertToHtml(string $source, bool $caseSensitive = null){
         $caseInsensitiveBool = is_null($caseSensitive) ? true : $caseSensitive;
         foreach ($this->parsers as $name => $parser) {
             $pattern = ($caseInsensitiveBool) ? $parser['pattern'].'i' : $parser['pattern'];
@@ -160,6 +165,10 @@ class bbcode { //extends AnotherClass
         return $source;
     }
 
+    /**
+     * Delete BBCode tag
+     * @param string $source is your text
+     */
     public function deleteBalise($source = string){
             
         foreach ($this->parsers as $name => $parser) {
@@ -171,6 +180,14 @@ class bbcode { //extends AnotherClass
         return $source;
     }
 
+    /**
+     * Add parser
+     * @param string $name "<b>Gras</b>" the name in the menu
+     * @param string $pattern '/\[b\] *?(.*?) *?\[\/b\]/s' the preg expression
+     * @param string $replace  '<b>$1</b>' the html 
+     * @param string $content   '$1' the content to put in html
+     * @param string $exemple   '[b]Texte[/b]' default value in input, if do not exist, it will not be show in menu bar
+     */
     public function addParser($name = string, $pattern = string, $replace = string, $content = string, $exemple = null) {
         $condition = (!is_null($exemple) && !empty($exemple) && is_string($exemple)) ? true : false;
         $exemple = ($condition) ? $exemple : '';
@@ -187,6 +204,12 @@ class bbcode { //extends AnotherClass
         return $this->addParser("Retour à la ligne", "/(\/n)/i", "<br />", "", "/n \n");
     }
 
+
+   /**
+     * create un menu bar with all the BBCode pattern
+     * @param string $idClassForm the id of your input
+     * @param string $js_css use de class's css and js
+     */
     public function menu($idClassForm = string, $js_css = true) {
 
         $menu = "";
@@ -204,7 +227,7 @@ class bbcode { //extends AnotherClass
 
         // == fin div
         
-        if(is_bool($js_css) && $js_css == false) { $js_css = false; }
+        //if(is_bool($js_css) && $js_css == false) { $js_css = false; }
         if ($js_css) {
             
         $menu .= "
